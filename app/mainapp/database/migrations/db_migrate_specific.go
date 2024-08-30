@@ -104,6 +104,30 @@ func SpecificMigrations(dbConn *gorm.DB, migrateVersion string) {
 			panic("Could register specific migration for key: " + migrationKey)
 		}
 
+		/* To lower case all users */
+		migrationKey = "username_lowercase"
+
+		// If the key does not exist then perform the migration
+		if migrationsMap[migrationKey] == false {
+
+			log.Println("Running specific migration for username lowercase.")
+
+			errmigrate := dbConn.Transaction(func(tx *gorm.DB) error {
+
+				if err := tx.Debug().Exec("UPDATE users SET username = LOWER(username), email = lower(email);").Error; err != nil {
+					log.Println("Could not register migration for key: "+migrationKey, err)
+					return err
+				}
+
+				// return nil will commit the whole transaction
+				return nil
+			})
+
+			if errmigrate != nil {
+				panic("Could register specific migration for key: " + migrationKey)
+			}
+		}
+
 	}
 
 }
