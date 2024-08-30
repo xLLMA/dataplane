@@ -116,10 +116,10 @@ func APIRoutes(app *fiber.App) {
 			roleValues := strings.Split(dpconfig.OIDCClaimRoleValues, ",")
 
 			// if empty then error
-			if len(roleValues) < 1 {
+			if len(stringRoles) < 1 {
 				return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
 					"Data Platform": "Dataplane",
-					"Error":         "Role values not set.",
+					"Error":         "Role values in token not set.",
 				})
 			}
 
