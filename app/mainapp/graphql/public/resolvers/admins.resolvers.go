@@ -63,6 +63,9 @@ func (r *mutationResolver) SetupPlatform(ctx context.Context, input *publicgraph
 			One:             platform.One,
 		}
 
+		// Lower case new user
+		input.AddUsersInput.Email = strings.ToLower(input.AddUsersInput.Email)
+
 		userData = &models.Users{
 			UserID:    uuid.New().String(),
 			UserType:  "admin",

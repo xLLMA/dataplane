@@ -43,6 +43,9 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input *privategraphql
 		return nil, errors.New("Password hash failed.")
 	}
 
+	// Lowercase email
+	input.Email = strings.ToLower(input.Email)
+
 	userData := models.Users{
 		UserID:    uuid.New().String(),
 		FirstName: input.FirstName,
@@ -113,7 +116,6 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, input *privategraphql
 	err := database.DBConn.Where("user_id = ?", input.UserID).Updates(models.Users{
 		FirstName: input.FirstName,
 		LastName:  input.LastName,
-		Email:     input.Email,
 		JobTitle:  input.JobTitle,
 		Timezone:  input.Timezone,
 	}).Error

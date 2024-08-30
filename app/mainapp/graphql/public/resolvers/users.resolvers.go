@@ -7,6 +7,7 @@ package publicresolvers
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/dataplane-app/dataplane/app/mainapp/auth"
 	"github.com/dataplane-app/dataplane/app/mainapp/database"
@@ -17,6 +18,10 @@ import (
 
 // LoginUser is the resolver for the loginUser field.
 func (r *queryResolver) LoginUser(ctx context.Context, username string, password string) (*publicgraphql.Authtoken, error) {
+
+	// Lower case username
+	username = strings.ToLower(username)
+
 	// check if a user exists
 	u := models.Users{}
 	if res := database.DBConn.Where(

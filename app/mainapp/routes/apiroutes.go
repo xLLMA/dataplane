@@ -90,6 +90,9 @@ func APIRoutes(app *fiber.App) {
 			})
 		}
 
+		// lower case email
+		userEmail = strings.ToLower(userEmail.(string))
+
 		// Extract the role from the claims and check if role is allowed
 		if dpconfig.OIDCClaimRoleKey != "" {
 
@@ -111,6 +114,15 @@ func APIRoutes(app *fiber.App) {
 
 			// Check if the role is in the allowed list
 			roleValues := strings.Split(dpconfig.OIDCClaimRoleValues, ",")
+
+			// if empty then error
+			if len(roleValues) < 1 {
+				return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
+					"Data Platform": "Dataplane",
+					"Error":         "Role values not set.",
+				})
+			}
+
 			for _, vRole := range stringRoles {
 				if utilities.InArray(vRole, roleValues) == false {
 					return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
